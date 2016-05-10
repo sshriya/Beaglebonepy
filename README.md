@@ -58,6 +58,29 @@ Beaglebone Black has 69 GPIO pins which can be configured as input or output. bl
 python blink.py
 ```
 
+To use a GPIO pin, two tings are needed:
+
+```
+1. Setup
+GPIO.setup(pin , Direction)
+The Direction can be GPIO.IN or GPIO.OUT
+
+2. Write/read
+GPIO.output(pin, state)
+State can be GPIO.HIGH or GPIO.LOW
+GPIO.input(pin)
+```
+
+The pins on Beaglebone can also be used to read digital inputs. These pins are 3.3V tolerant. Example to use pin P9_11 as digital input is input.py. Connect a toggle button to pin P9_12. 
+
+```
+python input.py
+python input_interrupt.py
+```
+The example input_interrupt.py shows ways to use interrupts on beaglebone pins.  
+
+## Device tree
+
 Not all pins on the Beaglebone are configured as GPIO as defalut. A single pin can have more than one functionality (SPI/ ADc/ GPIO etc). Therefore in order to use a pin which is does not work as GPIO by default, we need to use the device tree overlay. 
 
 Device tree overlay is a simple method by which we can chooce the fuctionality of interest on a multiplexed pin. In order to check which overlay is already loaded:
@@ -187,8 +210,62 @@ or
 2b. Read raw values
 ADC.read_raw(ADC number)
 ```
+Check for the available Device tree overlay, load overlay and the read adc value on cmd
+```
+1. ls /lib/firmware/ | grep ADC
+2. echo PyBBIO-ADC > $SLOTS
+3. cat /sys/bus/iio/devices/iio\:device0/in_voltage0_raw
 
+```
 
+## Quadrature Encoder
+Beaglebone has 2 eQEP modules which can be used to read quadrature encoder tick counts. In oder to use the eqep modules, we need drivers which can be downloaded by:
+
+```
+git clone https://github.com/Teknoman117/beaglebot
+```
+Copy the qep-*.dtbo to /lib/firmware
+```
+cd /lib/firmware
+echo bone-qep2b > $SLOTS
+find /sys |grep eqep
+```
+cat ../position to display tick counts.
+
+Pins: 
+```
+Right encoders
+eqep 1B P8_33
+eqep 1A P8_35
+
+Left Encoders
+eqep 2A P8_41
+eqep 2B P8_42
+```
+The paths for the sysfs entries on the beaglebones are
+
+/sys/devices/ocp.*/{epwmss_addr}.epwmss/{eqep_addr}.eqep/
+```
+For eQEP0, the epwmss address is 48300000 and the eqep address is 48300180
+
+For eQEP1, the epwmss address is 48302000 and the eqep address is 48302180
+
+For eQEP2, the epwmss address is 48304000 and the eqep address is 48304180
+```
+
+Quadrature encoder example is written in CPP. It is inside the cScripts folder. To complite and run:
+```
+gcc quadEncoder.c -o quadEncoder
+./quadEncoder
+```
+
+## Misc
+The device tree can be loaded on boot by :
+```
+nano /etc/default/capemgr
+CAPE=PyBBIO-ADC
+CAPE=bone_eqep1
+```
 
 
 
