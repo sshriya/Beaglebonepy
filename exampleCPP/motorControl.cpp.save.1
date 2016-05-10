@@ -1,0 +1,50 @@
+/* Control four motors on land rover 5
+
+M1 - P9_23, P9_27 
+M2 - p8_8, P8_10
+M3 - P8_12, P8_14
+M4 - P8_16, P8_18
+*/
+
+#include<iostream>
+#include<unistd.h> //for usleep
+#include"GPIO.h"
+   PWM pwm_m1("pwm_test_P9_22.16");  // example alternative pin
+   PWM pwm_m2("pwm_test_P9_42.17");  // P9_42 MUST be loaded as a slot before use
+   PWM pwm_m3("pwm_test_P9_16.19");  // example alternative pin
+   PWM pwm_m4("pwm_test_P9_14.18");  // P9_42 MUST be loaded as a slot before use
+  
+
+using namespace exploringBB;
+using namespace std;
+
+int main(){
+   //P9_23, p9_25
+   GPIO outGPIO11(49), outGPIO12(115);
+   GPIO outGPIO21(67), outGPIO22(68);
+   GPIO outGPIO31(44), outGPIO32(26);
+   GPIO outGPIO41(46), outGPIO42(65);
+
+   // Basic Output - Flash the LED 10 times, once per second
+   outGPIO11.setDirection(OUTPUT);
+   outGPIO12.setDirection(OUTPUT);
+   outGPIO21.setDirection(OUTPUT);
+   outGPIO22.setDirection(OUTPUT);
+   outGPIO31.setDirection(OUTPUT);
+   outGPIO32.setDirection(OUTPUT);
+   outGPIO41.setDirection(OUTPUT);
+   outGPIO42.setDirection(OUTPUT);
+
+   for (int i=0; i<10; i++){
+      outGPIO31.setValue(HIGH);
+      outGPIO32.setValue(HIGH);
+      outGPIO41.setValue(HIGH);
+      outGPIO42.setValue(HIGH);
+
+      usleep(500000); //micro-second sleep 0.5 seconds
+      outGPIO31.setValue(LOW);
+      usleep(500000);
+   }
+  
+   return 0;
+}

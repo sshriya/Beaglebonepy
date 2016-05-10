@@ -1,0 +1,103 @@
+/* Control four motors on land rover 5
+
+M1 - P9_23, P9_27 
+M2 - p8_8, P8_10
+M3 - P8_12, P8_14
+M4 - P8_16, P8_18
+*/
+
+
+#include<iostream>
+#include"PWM.h"      //placed in the current directory for ease of use
+
+using namespace exploringBB;
+using namespace std;
+
+int main(){
+   PWM pwm_m1("pwm_test_P9_22.16");  // example alternative pin
+   PWM pwm_m2("pwm_test_P9_42.17");  // P9_42 MUST be loaded as a slot before use
+   PWM pwm_m3("pwm_test_P9_16.19");  // example alternative pin
+   PWM pwm_m4("pwm_test_P9_14.18");  // P9_42 MUST be loaded as a slot before use
+  
+   pwm_m1.setPeriod(100000);         // Set the period in ns
+   pwm_m1.setDutyCycle(20.0f);       // Set the duty cycle as a percentage
+   pwm_m1.setPolarity(PWM::ACTIVE_LOW);  // using active low PWM
+   pwm_m1.run();                     // start the PWM output
+   pwm_m2.setPeriod(100000);         // Set the period in ns
+   pwm_m2.setDutyCycle(40.0f);       // Set the duty cycle as a percentage
+   pwm_m2.setPolarity(PWM::ACTIVE_LOW);  // using active low PWM
+   pwm_m2.run(); 
+   pwm_m3.setPeriod(100000);         // Set the period in ns
+   pwm_m3.setDutyCycle(60.0f);       // Set the duty cycle as a percentage
+   pwm_m3.setPolarity(PWM::ACTIVE_LOW);  // using active low PWM
+   pwm_m3.run(); 
+   pwm_m4.setPeriod(100000);         // Set the period in ns
+   pwm_m4.setDutyCycle(80.0f);       // Set the duty cycle as a percentage
+   pwm_m4.setPolarity(PWM::ACTIVE_LOW);  // using active low PWM
+   pwm_m4.run(); 
+
+
+}
+#include<iostream>
+#include<unistd.h> //for usleep
+#include"GPIO.h"
+#include"PWM.h"
+using namespace exploringBB;
+using namespace std;
+
+void moveForward(void);
+
+int main(){
+   //Select logic pins 
+   GPIO outGPIO11(49), outGPIO12(115);
+   GPIO outGPIO21(67), outGPIO22(68);
+   GPIO outGPIO31(44), outGPIO32(26);
+   GPIO outGPIO41(46), outGPIO42(65);
+
+   //  Configure Logic pins
+   outGPIO11.setDirection(OUTPUT);
+   outGPIO12.setDirection(OUTPUT);
+   outGPIO21.setDirection(OUTPUT);
+   outGPIO22.setDirection(OUTPUT);
+   outGPIO31.setDirection(OUTPUT);
+   outGPIO32.setDirection(OUTPUT);
+   outGPIO41.setDirection(OUTPUT);
+   outGPIO42.setDirection(OUTPUT);
+
+   // Configure pwm pins
+   PWM pwm_m1("pwm_test_P9_22.16");  // M1
+   PWM pwm_m2("pwm_test_P9_42.17");  // M2
+   PWM pwm_m3("pwm_test_P9_16.19");  // M3
+   PWM pwm_m4("pwm_test_P9_14.18");  // M4
+
+  while (1){
+	moveForward();
+	sleep(2); 
+	}
+}
+
+void moveForward(void){
+	outGPIO31.setvalue(HIGH);
+	   PWM pwm_m1("pwm_test_P9_22.16");  // example alternative pin
+   PWM pwm_m2("pwm_test_P9_42.17");  // P9_42 MUST be loaded as a slot before use
+   PWM pwm_m3("pwm_test_P9_16.19");  // example alternative pin
+   PWM pwm_m4("pwm_test_P9_14.18");  // P9_42 MUST be loaded as a slot before use
+  
+	
+}
+
+
+
+   for (int i=0; i<10; i++){
+      outGPIO31.setValue(HIGH);
+      outGPIO32.setValue(HIGH);
+      outGPIO41.setValue(HIGH);
+      outGPIO42.setValue(HIGH);
+
+      usleep(500000); //micro-second sleep 0.5 seconds
+      outGPIO31.setValue(LOW);
+      usleep(500000);
+   }
+  
+   return 0;
+}
